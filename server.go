@@ -114,6 +114,16 @@ func (s *Server) AllocationCount() int {
 	return allocs
 }
 
+func (s *Server) AllocationUsage() (total, used int) {
+	usageMap := make(map[string]int)
+	for _, am := range s.allocationManagers {
+		for k, u := range am.AllocationUsage() {
+			usageMap[k] = u
+		}
+	}
+	return
+}
+
 // Close stops the TURN Server. It cleans up any associated state and closes all connections it is managing
 func (s *Server) Close() error {
 	var errors []error

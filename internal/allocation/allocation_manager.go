@@ -72,6 +72,17 @@ func (m *Manager) AllocationCount() int {
 	return len(m.allocations)
 }
 
+func (m *Manager) AllocationUsage() map[string]int {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+	usage := make(map[string]int)
+	for k, a := range m.allocations {
+		usage[k] = a.Usage
+	}
+
+	return usage
+}
+
 // Close closes the manager and closes all allocations it manages
 func (m *Manager) Close() error {
 	m.lock.Lock()

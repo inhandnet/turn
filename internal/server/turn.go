@@ -381,6 +381,6 @@ func handleChannelData(r Request, c *proto.ChannelData) error {
 	} else if l != len(c.Data) {
 		return fmt.Errorf("%w %d != %d (expected)", errShortWrite, l, len(c.Data))
 	}
-
+	a.AddUsage(len(r.Buff))
 	return nil
 }

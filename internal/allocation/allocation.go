@@ -28,6 +28,7 @@ type Allocation struct {
 	Protocol            Protocol
 	TurnSocket          net.PacketConn
 	RelaySocket         net.PacketConn
+	Usage               int
 	fiveTuple           *FiveTuple
 	permissionsLock     sync.RWMutex
 	permissions         map[string]*Permission
@@ -35,8 +36,8 @@ type Allocation struct {
 	channelBindings     []*ChannelBind
 	lifetimeTimer       *time.Timer
 	closed              chan interface{}
-	log                 logging.LeveledLogger
 
+	log logging.LeveledLogger
 	// Some clients (Firefox or others using resiprocate's nICE lib) may retry allocation
 	// with same 5 tuple when received 413, for compatible with these clients,
 	// cache for response lost and client retry to implement 'stateless stack approach'
@@ -53,6 +54,10 @@ func NewAllocation(turnSocket net.PacketConn, fiveTuple *FiveTuple, log logging.
 		closed:      make(chan interface{}),
 		log:         log,
 	}
+}
+
+func (a *Allocation) AddUsage(usage int) {
+	a.Usage += usage
 }
 
 // GetPermission gets the Permission from the allocation
